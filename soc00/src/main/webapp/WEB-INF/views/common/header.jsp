@@ -85,6 +85,7 @@
 			<li class = "btn btn-lg btn-default"><a class = "nav-link" href="#"><strong>뉴스</strong></a></li>
 			<li class = "btn btn-lg btn-default"><a class = "nav-link" href="#"><strong>자유</strong></a></li>
 			<li class = "btn btn-lg btn-default"><a class = "nav-link" href="#"><strong>축구몰</strong></a></li>
+			<li class = "btn btn-lg btn-default"><a class = "nav-link" href="/shop/cartList"><strong>장바구니</strong></a></li>
 	
 		</ul>
 	</nav>	

@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="mapper.cart">
+
+	<resultMap id="cartResult" type="CartVO">
+		<result property="c_no" column="c_no" />
+		<result property="p_no" column="p_no" />
+		<result property="u_id" column="u_id" />
+		<result property="c_count" column="c_count" />
+	</resultMap>
+	
+	<resultMap id="shopResult" type="ShopVO">
+		<result property="p_no" column="p_no"/>
+		<result property="p_name" column="p_name"/>
+		<result property="p_price" column="p_price"/>
+		<result property="p_category" column="p_category"/>
+		<result property="p_content" column="p_content"/>
+		<result property="p_option" column="p_option"/>
+		<result property="p_filename" column="p_filename"/>
+		<result property="p_stock" column="p_stock"/>
+		<result property="p_thumb" column="p_thumb"/>
+	</resultMap>
+
+	
+	
+	<!-- 카트 목록 -->
+	<select id="cartList"  parameterType="cartVO"  resultMap="shopResult"   >
+	    <![CDATA[
+		select * from cart 
+		]]>
+	</select>
+	<!-- 내용 수정전 
+		select *
+		from cart 
+		where u_id= #{u_id}  -->
+	
+	
+	<!-- 카트 담기 -->
+	<insert id="insertGoodsInCart" parameterType="cartVO">
+	    <![CDATA[
+		    	insert into cart (c_no, p_no, u_id)
+		        values(null, #{p_no}, #{u_id})
+    	]]>
+	</insert>
+	
+	<!-- c_no 컬럼이 AI이므로 주석처리 
+	<select id="selectMaxCartId" resultType="int">
+	    <![CDATA[
+			select nvl(max(cart_id), 0) + 1 from t_shopping_cart 
+    	]]>
+	</select>
+	-->
+	
+	<!-- 
+	<select id="selectCountInCart" resultType="String" parameterType="cartVO">
+	    <![CDATA[
+		    select decode(count(*), 0, 'false', 'true') 
+		    from cart
+			where p_no = #{p_no}
+			  and u_id= #{u_id} 
+
+    	]]>
+	</select>
+	-->
+	
+	<select id="selectCountInCart" resultType="String" parameterType="cartVO">
+		<!-- 맞는지 모름... -->
+	    <![CDATA[
+		select count(*) 
+	        (
+	          CASE 
+	          WHEN 0  THEN 'false'
+	          ELSE    'true'
+	          END
+	        )
+	
+		from  cart
+		where p_no = #{p_no}
+		and   u_id= #{u_id} 
+
+    	]]>
+	</select>
+	
+	
+	<select id="selectGoodsList" resultMap="shopResult" parameterType="java.util.Map">
+      <![CDATA[
+          select g.*,d.fileName 
+          from products g, t_goods_detail_image d
+          where g.p_no = d.p_no
+          and d.filetype='main_image'
+           and g.goods_id in
+      ]]>
+		<foreach item="item" collection="list" open="(" separator="," close=")">
+			#{item.goods_id}
+		</foreach>
+	</select>
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<!-- <인터넷 사이트 강의> 카트 담기 
+	<insert id="addCart" parameterType="cartListVO">
+		insert into cart (c_no, u_id, p_no, c_count)
+		values (null,#{u_id}, #{p_no}, #{c_count})
+	</insert>
+	-->
+
+	<!-- 카트 목록 
+	<select id="cartList" resultType="cartListVO">
+		select
+		    row_number() over(order by c.c_no desc) as no,
+		    c.c_no, c.u_id, c.p_no, c.c_count,
+		    g.p_name, g.p_price, g.p_thumb
+		from cart c
+		    inner join products g
+		        on c.p_no = g.p_no   
+		    where c.u_id = #{u_id}
+	</select>
+	-->
+	
+	<!-- 카테고리별 상품 리스트 : 1차 분류 
+	<select id="list_1" resultType="com.kubg.domain.GoodsViewVO">
+	select
+	    g.gdsNum, g.gdsName, g.cateCode, c.cateCodeRef, c.cateName,
+	    gdsPrice, gdsStock, gdsDes, gdsDate, g.gdsImg, g.gdsThumbImg
+	        from tbl_goods g
+	            inner join goods_category c
+	                on g.cateCode = c.cateCode            
+	            where g.cateCode = #{cateCode}
+	            	or c.cateCodeRef = #{cateCodeRef}
+	</select>
+	-->
+	
+	<!-- 카테고리별 상품 리스트 : 2차 분류 
+	<select id="list_2" resultType="com.kubg.domain.GoodsViewVO">
+	select
+	    g.gdsNum, g.gdsName, g.cateCode, c.cateCodeRef, c.cateName,
+	    gdsPrice, gdsStock, gdsDes, gdsDate, g.gdsImg, g.gdsThumbImg
+	        from tbl_goods g
+	            inner join goods_category c
+	                on g.cateCode = c.cateCode            
+	            where g.cateCode = #{cateCode}
+	</select>
+	-->
+	
+	<!-- 상품 소감(댓글) 작성 
+	<insert id="registReply">
+		insert into tbl_reply (gdsNum, userName, repNum, repCon)
+	   		values (#{gdsNum}, #{userName}, tbl_reply_seq.nextval, #{repCon})
+	</insert>
+	-->
+	
+	<!-- 상품 소감(댓글) 리스트 
+	<select id="replyList" resultType="com.kubg.domain.ReplyVO">
+		select
+		    gdsNum, userName, repNum, repCon, repDate
+		from tbl_reply
+		    where gdsNum = #{gdsNum}
+	</select>
+	-->
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<!-- <강의 자료>
+
+	<update id="updateCartGoodsQty" parameterType="cartVO">
+	    <![CDATA[
+			update t_shopping_cart
+			       set cart_goods_qty=#{cart_goods_qty}
+		 	       where member_id=#{member_id}
+			        and goods_id=#{goods_id}
+    	]]>
+	</update>
+	<delete id="deleteCartGoods" parameterType="int">
+	    <![CDATA[
+	      delete from t_shopping_cart
+	      where cart_id=#{cart_id}
+    	]]>
+	</delete>
+	
+	
+	-->
+	
+</mapper>

@@ -11,6 +11,7 @@ public class MemberVO {
 	private String u_address;
 	private String u_email;
 	private int u_no;
+	private int certification;
 	
 	public MemberVO() {
 		
@@ -73,6 +74,24 @@ public class MemberVO {
 		this.u_email = u_email;
 	}
 	
+	
+	
+	public int getU_no() {
+		return u_no;
+	}
+
+	public void setU_no(int u_no) {
+		this.u_no = u_no;
+	}
+
+	public int getCertification() {
+		return certification;
+	}
+
+	public void setCertification(int certification) {
+		this.certification = certification;
+	}
+
 	@Override
 	public String toString() {
 		String info = u_id + ", " + u_pw + ", " + u_name + ", " + u_phone +", " + u_email + ", " + u_address;
